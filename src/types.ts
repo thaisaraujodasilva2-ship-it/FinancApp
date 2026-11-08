@@ -25,6 +25,32 @@ export type PaymentMethod =
   | 'Dinheiro'
   | 'Transferência';
 
+export interface FinancialDiagnostic {
+  approxSalary?: number; // Salário aproximado / Renda mensal
+  estimatedFixedExpenses?: number; // Informações sobre contas fixas aproximadas
+  estimatedVariableExpenses?: number; // Contas variáveis aproximadas
+  wantsSavings?: boolean; // Se quer fazer uma poupança
+  intendedSavingsAmount?: number; // Quanto pretende poupar
+  financialGoalObjective?: string; // Objetivo do controle financeiro escrito pelo cliente
+  proposalDocumentUrl?: string; // Anexo de documento ou proposta em PDF
+  proposalDocumentName?: string;
+  proposalText?: string;
+  approvedAt?: string;
+  approvedBy?: string;
+}
+
+export interface AppNotification {
+  id: string;
+  userId: string; // target user id, or 'admin'
+  title: string;
+  message: string;
+  type: 'approval_request' | 'approval_confirmed' | 'bill_due' | 'goal_updated' | 'info';
+  date: string;
+  read: boolean;
+  attachmentUrl?: string;
+  attachmentName?: string;
+}
+
 export interface UserPreferences {
   monthlyClosingDay: number; // e.g. 1, 5, 10, 15, 20
   notificationChannels: {
@@ -44,9 +70,11 @@ export interface User {
   createdAt: string;
   avatarUrl?: string;
   status: 'active' | 'inactive';
+  approvalStatus?: 'pending' | 'approved' | 'rejected';
   themePreference?: 'light' | 'dark';
   authProvider?: 'email' | 'google';
-  // Cartão Alimentação / VR / VA
+  // Cartão Alimentação / VR / VA com botão On/Off
+  hasFoodCard?: boolean;
   foodCardBalance?: number; // Saldo disponível em reais
   foodCardMonthlyAllowance?: number; // Recarga mensal contratada
   foodCardClosingDay?: number; // Dia de recarga mensal
@@ -55,6 +83,7 @@ export interface User {
   subscriptionExpiresAt: string; // YYYY-MM-DD
   planName?: 'Mensal' | 'Trimestral' | 'Anual';
   preferences: UserPreferences;
+  financialDiagnostic?: FinancialDiagnostic;
 }
 
 export interface Transaction {
