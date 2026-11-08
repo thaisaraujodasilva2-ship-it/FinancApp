@@ -1,0 +1,6 @@
+{
+  "name": "FinancApp - Controle Financeiro Inteligente",
+  "description": "Sistema completo de controle financeiro pessoal e empresarial com painel do usuário, visão do administrador, parcelamentos, metas orçamentárias e análise gráfica.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

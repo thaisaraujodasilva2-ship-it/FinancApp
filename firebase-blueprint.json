@@ -1,0 +1,62 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile in FinancApp",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "email": { "type": "string" },
+        "role": { "type": "string", "enum": ["admin", "user"] },
+        "status": { "type": "string", "enum": ["active", "inactive"] },
+        "createdAt": { "type": "string" },
+        "themePreference": { "type": "string", "enum": ["light", "dark"] }
+      },
+      "required": ["name", "email", "role", "status"]
+    },
+    "Transaction": {
+      "title": "Transaction",
+      "description": "Financial transaction entry",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "desc": { "type": "string", "maxLength": 200 },
+        "amount": { "type": "number" },
+        "type": { "type": "string", "enum": ["income", "fixed", "variable"] },
+        "category": { "type": "string" },
+        "date": { "type": "string" },
+        "paymentMethod": { "type": "string" },
+        "notes": { "type": "string", "maxLength": 500 }
+      },
+      "required": ["userId", "desc", "amount", "type", "category", "date"]
+    },
+    "Goal": {
+      "title": "Goal",
+      "description": "Monthly financial spending limit and savings goal",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "spendingLimit": { "type": "number" },
+        "savingsGoal": { "type": "number" },
+        "adminNote": { "type": "string", "maxLength": 1000 },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["userId", "spendingLimit", "savingsGoal"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profile document"
+    },
+    "/transactions/{transactionId}": {
+      "schema": "Transaction",
+      "description": "Financial income and expense records"
+    },
+    "/goals/{goalId}": {
+      "schema": "Goal",
+      "description": "Budget limits and advisor notes per user"
+    }
+  }
+}
