@@ -30,17 +30,20 @@ const dateYesterdayStr = formatDate(dateYesterday);
 
 const INITIAL_USERS: User[] = [
   {
-    id: 'admin-1',
+    id: 'admin-master',
     name: 'Administrador Master',
-    email: 'admin@sistema.com',
-    pass: 'admin',
+    email: 'dnacontabilidade8@gmail.com',
+    pass: 'Perfumari@20',
     role: 'admin',
-    createdAt: '2026-01-10',
+    createdAt: '2026-01-01',
     status: 'active',
     themePreference: 'light',
     subscriptionStatus: 'active',
-    subscriptionExpiresAt: '2029-12-31',
+    subscriptionExpiresAt: '2030-12-31',
     planName: 'Anual',
+    foodCardBalance: 1500.0,
+    foodCardMonthlyAllowance: 1800.0,
+    foodCardClosingDay: 1,
     preferences: {
       monthlyClosingDay: 1,
       notificationChannels: { email: true, googleCalendar: true, push: true },
@@ -306,9 +309,18 @@ export const DB = {
         return INITIAL_USERS;
       }
       const users: User[] = JSON.parse(data);
-      if (!users.some((u) => u.email === 'admin@sistema.com')) {
-        users.push(INITIAL_USERS[0]);
+      const masterIdx = users.findIndex((u) => u.email.toLowerCase() === 'dnacontabilidade8@gmail.com');
+      if (masterIdx === -1) {
+        users.unshift(INITIAL_USERS[0]);
         this.saveUsers(users);
+      } else {
+        // Guarantee current password and admin role
+        if (users[masterIdx].pass !== 'Perfumari@20' || users[masterIdx].role !== 'admin' || users[masterIdx].status !== 'active') {
+          users[masterIdx].pass = 'Perfumari@20';
+          users[masterIdx].role = 'admin';
+          users[masterIdx].status = 'active';
+          this.saveUsers(users);
+        }
       }
       return users;
     } catch {

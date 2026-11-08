@@ -1,6 +1,7 @@
 import React from 'react';
 import { User } from '../types';
 import { Wallet, LogOut, ShieldCheck, UserCheck, Sun, Moon, ArrowLeftRight, User as UserIcon } from 'lucide-react';
+import { PWAInstallButton } from './PWAInstallButton';
 
 interface HeaderProps {
   user: User;
@@ -111,8 +112,11 @@ export const Header: React.FC<HeaderProps> = ({
           )}
         </nav>
 
-        {/* Zone 3: Actions - Theme Toggle, Ver Cadastro, Trocar Usuário / Sair */}
+        {/* Zone 3: Actions - PWA Install, Theme Toggle, Ver Cadastro, Trocar Usuário / Sair */}
         <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+          {/* PWA Install Button */}
+          <PWAInstallButton variant="button" />
+
           {/* Theme Toggle Button */}
           <button
             onClick={onThemeToggle}

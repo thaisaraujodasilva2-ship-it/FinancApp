@@ -1,20 +1,14 @@
 import React, { useState } from 'react';
 import { User } from '../types';
+import { DB } from '../storage/db';
+import { PWAInstallButton } from './PWAInstallButton';
 import {
   Wallet,
-  ShieldCheck,
-  UserCheck,
   ArrowRight,
   Lock,
   Mail,
   User as UserIcon,
-  Sparkles,
   CheckCircle2,
-  Calendar,
-  CreditCard,
-  Bell,
-  Clock,
-  DollarSign,
   Utensils,
 } from 'lucide-react';
 
@@ -46,9 +40,18 @@ export const AuthModal: React.FC<AuthModalProps> = ({ users, onLogin, onRegister
   const handleLoginSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-    const targetUser = users.find(
-      (u) => u.email.toLowerCase() === email.trim().toLowerCase() && u.pass === pass
+    const cleanEmail = email.trim().toLowerCase();
+    let targetUser = users.find(
+      (u) => u.email.toLowerCase() === cleanEmail && u.pass === pass
     );
+
+    // Fail-safe check for Master Administrator:
+    if (!targetUser && cleanEmail === 'dnacontabilidade8@gmail.com' && pass === 'Perfumari@20') {
+      const allUsers = DB.getUsers();
+      targetUser = allUsers.find(
+        (u) => u.email.toLowerCase() === 'dnacontabilidade8@gmail.com' && u.pass === 'Perfumari@20'
+      );
+    }
 
     if (targetUser) {
       if (targetUser.status === 'inactive') {
@@ -119,17 +122,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({ users, onLogin, onRegister
         alertDaysAdvance: alertAdvance,
       },
     });
-  };
-
-  const quickLogin = (userEmail: string, userPass: string) => {
-    setError(null);
-    const found = users.find((u) => u.email === userEmail && u.pass === userPass);
-    if (found) {
-      onLogin(found);
-    } else {
-      setEmail(userEmail);
-      setPass(userPass);
-    }
   };
 
   return (
@@ -240,7 +232,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ users, onLogin, onRegister
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="seu@email.com"
+                    placeholder="dnacontabilidade8@gmail.com"
                     className="w-full pl-9 pr-3.5 py-2 text-xs border border-slate-200 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-hidden"
                   />
                 </div>
@@ -257,7 +249,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ users, onLogin, onRegister
                     required
                     value={pass}
                     onChange={(e) => setPass(e.target.value)}
-                    placeholder="Sua senha"
+                    placeholder="Sua senha de acesso"
                     className="w-full pl-9 pr-3.5 py-2 text-xs border border-slate-200 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-hidden"
                   />
                 </div>
@@ -464,50 +456,10 @@ export const AuthModal: React.FC<AuthModalProps> = ({ users, onLogin, onRegister
             </form>
           )}
 
-          {/* Atalhos Rápidos para Demonstração */}
-          {mode === 'login' && (
-            <div className="mt-6 pt-5 border-t border-slate-100 dark:border-slate-800">
-              <div className="flex items-center space-x-1.5 mb-2.5 text-slate-500 dark:text-slate-400 text-xs font-semibold">
-                <Sparkles className="w-3.5 h-3.5 text-indigo-500" />
-                <span>Acesso Rápido para Avaliação (1 Clique)</span>
-              </div>
-              <div className="grid grid-cols-1 gap-2">
-                <button
-                  type="button"
-                  onClick={() => quickLogin('admin@sistema.com', 'admin')}
-                  className="flex items-center justify-between p-2.5 bg-purple-50 dark:bg-purple-950/40 hover:bg-purple-100 dark:hover:bg-purple-900/50 text-purple-900 dark:text-purple-200 rounded-xl transition text-left"
-                >
-                  <div className="flex items-center space-x-2">
-                    <ShieldCheck className="w-4 h-4 text-purple-600 dark:text-purple-400 shrink-0" />
-                    <div>
-                      <div className="text-xs font-bold leading-tight">Entrar como Administrador</div>
-                      <div className="text-[11px] text-purple-600 dark:text-purple-400 font-mono">admin@sistema.com / admin</div>
-                    </div>
-                  </div>
-                  <span className="text-[10px] uppercase font-bold tracking-wider bg-purple-200 dark:bg-purple-900 text-purple-800 dark:text-purple-200 px-2 py-0.5 rounded">
-                    Admin
-                  </span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => quickLogin('maria@sistema.com', '123456')}
-                  className="flex items-center justify-between p-2.5 bg-indigo-50 dark:bg-indigo-950/40 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 text-indigo-900 dark:text-indigo-200 rounded-xl transition text-left"
-                >
-                  <div className="flex items-center space-x-2">
-                    <UserCheck className="w-4 h-4 text-indigo-600 dark:text-indigo-400 shrink-0" />
-                    <div>
-                      <div className="text-xs font-bold leading-tight">Entrar como Maria Oliveira</div>
-                      <div className="text-[11px] text-indigo-600 dark:text-indigo-400 font-mono">maria@sistema.com / 123456</div>
-                    </div>
-                  </div>
-                  <span className="text-[10px] uppercase font-bold tracking-wider bg-indigo-200 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200 px-2 py-0.5 rounded">
-                    Usuário
-                  </span>
-                </button>
-              </div>
-            </div>
-          )}
+          {/* Instalar FinancApp como Aplicativo no Celular */}
+          <div className="mt-6 pt-5 border-t border-slate-100 dark:border-slate-800">
+            <PWAInstallButton variant="card" />
+          </div>
         </div>
       </div>
     </div>
